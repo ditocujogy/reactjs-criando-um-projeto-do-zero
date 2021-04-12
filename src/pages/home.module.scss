@@ -1,1 +1,69 @@
-// TODO
+.container {
+  min-height: 100%;
+  background-color: var(--background);
+
+  padding: 5rem 23rem;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  & button {
+    color: var(--highlight);
+
+    font-weight: 600;
+    font-size: 1.125rem;
+  }
+}
+
+.posts {
+  margin: 4rem 0 auto;
+}
+
+.post {
+  & h1 {
+    color: var(--heading);
+    font-weight: 700;
+    font-size: 1.75rem;
+
+    transition: color 0.2s;
+  }
+
+  & p {
+    color: var(--body);
+    font-size: 1.125rem;
+
+    margin: 0.5rem 0 1.5rem;
+  }
+
+  & svg, & span, & time {
+    color: var(--info);
+  }
+
+  & span, & time {
+    font-size: 0.875rem;
+    margin-left: 0.5rem;
+  }
+
+  & time + svg {
+    margin-left: 1.5rem;
+  }
+
+  &:hover {
+    & h1 {
+      color: yellow;
+    }
+  }
+}
+
+.post + .post {
+  & h1 {
+    margin-top: 3rem;
+  }
+}
+
+.posts + button {
+  margin-top: 4rem;
+}

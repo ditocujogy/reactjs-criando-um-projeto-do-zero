@@ -1,1 +1,10 @@
-// TODO
+.container {
+  display: flex;
+
+  align-items: center;
+
+  padding: 0 23rem;
+  height: 6.5rem;
+
+  background-color: var(--background);
+}
