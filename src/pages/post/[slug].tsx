@@ -8,6 +8,7 @@ import format from 'date-fns/format';
 import ptBr from 'date-fns/locale/pt-BR';
 
 import Header from '../../components/Header';
+import Comments from '../../components/Comments';
 
 import { getPrismicClient } from '../../services/prismic';
 
@@ -93,6 +94,8 @@ export default function Post({ post }: PostProps): ReactElement {
             </div>
           ))}
         </div>
+
+        <Comments />
       </div>
     </>
   );
