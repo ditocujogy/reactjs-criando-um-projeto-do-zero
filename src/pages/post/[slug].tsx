@@ -1,6 +1,7 @@
 import { ReactElement } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 
 import { RichText } from 'prismic-dom';
@@ -16,6 +17,7 @@ import styles from './post.module.scss';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -31,11 +33,24 @@ interface Post {
   };
 }
 
-interface PostProps {
-  post: Post;
+interface SidePost {
+  slug: string;
+  title: string;
 }
 
-export default function Post({ post }: PostProps): ReactElement {
+interface PostProps {
+  post: Post;
+  preview: boolean;
+  updatedPreviousPost: SidePost | null;
+  updatedNextPost: SidePost | null;
+}
+
+export default function Post({
+  post,
+  preview,
+  updatedPreviousPost,
+  updatedNextPost,
+}: PostProps): ReactElement {
   const router = useRouter();
 
   function calculateReadingTime(): string {
@@ -82,9 +97,21 @@ export default function Post({ post }: PostProps): ReactElement {
           <span>{post.data.author}</span>
           <FiClock size={20} />
           <span>{readingTime}</span>
+
+          {post.last_publication_date && (
+            <i>
+              {format(
+                new Date(post.last_publication_date),
+                "'*editado em 'dd MMM yyyy', às 'kk:mm",
+                {
+                  locale: ptBr,
+                }
+              )}
+            </i>
+          )}
         </div>
 
-        <div className={styles.post}>
+        <div>
           {post.data.content.map(content => (
             <div key={content.heading} className={styles.contentText}>
               <h1 className={styles.contentTitle}>{content.heading}</h1>
@@ -95,7 +122,34 @@ export default function Post({ post }: PostProps): ReactElement {
           ))}
         </div>
 
+        <div className={styles.sidePosts}>
+          {updatedPreviousPost && (
+            <Link href={`/post/${updatedPreviousPost.slug}`}>
+              <a>
+                <h3>{updatedPreviousPost.title}</h3>
+                <p>Post anterior</p>
+              </a>
+            </Link>
+          )}
+          {updatedNextPost && (
+            <Link href={`/post/${updatedNextPost?.slug}`}>
+              <a>
+                <h3>{updatedNextPost.title}</h3>
+                <p>Próximo post</p>
+              </a>
+            </Link>
+          )}
+        </div>
+
         <Comments />
+
+        {preview && (
+          <aside>
+            <Link href="/api/exit-preview">
+              <a>Sair do modo Preview</a>
+            </Link>
+          </aside>
+        )}
       </div>
     </>
   );
@@ -115,11 +169,58 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<PostProps> = async ({
+  params,
+  preview = false,
+  previewData,
+}) => {
   const { slug } = params;
 
   const prismic = getPrismicClient();
-  const response = await prismic.getByUID('post', String(slug), {});
+  const response = await prismic.getByUID('post', String(slug), {
+    ref: previewData?.ref ?? null,
+  });
+
+  const postsResponse = await prismic.query('', {
+    pageSize: 4,
+    ref: previewData?.ref ?? null,
+  });
+
+  let thisPostIndex = -1;
+
+  for (let i = 0; i < postsResponse.results.length; i += 1) {
+    if (postsResponse.results[i].id === response.id) {
+      thisPostIndex = i;
+    }
+  }
+
+  let previousPost = null;
+  let nextPost = null;
+
+  if (thisPostIndex !== -1) {
+    if (thisPostIndex < postsResponse.results.length - 1) {
+      previousPost = postsResponse.results[thisPostIndex + 1];
+    }
+    if (thisPostIndex !== 0) {
+      nextPost = postsResponse.results[thisPostIndex - 1];
+    }
+  }
+
+  const updatedPreviousPost =
+    previousPost === null
+      ? null
+      : {
+        slug: previousPost?.uid,
+        title: previousPost?.data?.title,
+      };
+
+  const updatedNextPost =
+    nextPost === null
+      ? null
+      : {
+        slug: nextPost?.uid,
+        title: nextPost?.data?.title,
+      };
 
   // const post = {
   //   first_publication_date: format(
@@ -171,6 +272,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       post: response,
+      preview,
+      updatedPreviousPost,
+      updatedNextPost,
     },
   };
 };

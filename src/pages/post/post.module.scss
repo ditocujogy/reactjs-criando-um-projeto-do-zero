@@ -21,7 +21,11 @@
     margin-bottom: 1.5rem;
   }
 
-  & svg, & span, & time, & p {
+  & p {
+    text-align: justify;
+  }
+
+  & svg, & span, & time, & p, & i {
     color: var(--info);
   }
 
@@ -36,19 +40,35 @@
 
   & div:last-of-type {
     margin-bottom: 5rem;
-
     & > div {
       max-width: 74rem;
     }
+  }
+
+  & aside a {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--heading);
+    color: var(--background);
+
+    border-radius: 0.25rem;
+
+    margin: 0 0 5rem;
+    height: 3.625rem;
   }
 }
 
 .info {
   margin: 5rem 0 4rem;
-}
 
-.post {
-  margin-bottom: 5rem;
+  & i {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.865rem;
+  }
 }
 
 .contentTitle {
@@ -63,5 +83,35 @@
 .contentText {
   & p + p {
     margin-top: 1.5rem;
+  }
+}
+
+.sidePosts {
+  display: flex;
+  justify-content: space-between;
+
+  border-top: 1px solid rgba(215, 215, 215, 0.1);
+  padding: 4rem 0 5rem;
+
+  & a {
+    display: inline-block;
+  }
+
+  & a:nth-child(2) {
+    & p {
+      text-align: end;
+    }
+  }
+
+  & h3 {
+    color: var(--heading);
+    font-size: 1.125rem;
+    font-weight: 400;
+  }
+
+  & p {
+    margin-top: 0.5rem;
+    color: var(--highlight);
+    font-weight: 600;
   }
 }

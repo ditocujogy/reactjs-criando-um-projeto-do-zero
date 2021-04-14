@@ -16,6 +16,25 @@
     font-weight: 600;
     font-size: 1.125rem;
   }
+
+  & aside {
+    width: 100%
+  }
+
+  & aside a {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--heading);
+    color: var(--background);
+
+    border-radius: 0.25rem;
+
+    margin-top: 5rem;
+    height: 3.625rem;
+  }
 }
 
 .posts {
