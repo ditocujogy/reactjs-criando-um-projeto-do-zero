@@ -29,7 +29,7 @@
 
 #### That is how it should look like:
 
-![Print](https://github.com/ditocujogy/reactjs-criando-um-projeto-do-zero/blob/main/public/space_traveling.png)
+![Print](https://github.com/ditocujogy/reactjs-criando-um-projeto-do-zero/blob/master/public/space_traveling.png)
 #
 ### <p align=center> :white_check_mark: </p>
 #
